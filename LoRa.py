@@ -1840,3 +1840,4 @@ class LoRa2(object):
         s += " status             %s\n" % self.get_modem_status()
         s += " version            %#02x\n" % self.get_version()
         return s
+#
