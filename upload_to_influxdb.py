@@ -6,9 +6,14 @@ from datetime import datetime
 
 
 def switch_database(val):
+    '''
+    This function tries to switch databases on influxDB. The first integer in the list identifies the database.
+    Example of received data: [1, 34.7, 30.6]. 1 would be the device identifier while 34.7 and 30.6 are the 
+    sensor values. Currently, only two devices are going to be tested.
+    '''
     try:
         device_no = int(val)
-    except ValueError:
+    except:
         print("Can't convert {} into integer".format(val))
     if device_no == 1:
         #client.switch_database("device_1")
@@ -17,14 +22,24 @@ def switch_database(val):
         #client.switch_database("device_2")
         print("Switched to database device_2 \n")
     else:
-        print("No database with integer {0}! No device_{0}".format(device_no))
+        print("No database with integer {0}! No device_{0}. Aborting upload.".format(device_no))
+        return False
 
 def upload_data(data):
+    '''
+    This function creates json file and tries to upload it to influxDB. First integer of the received data 
+    must be device identifier while the following data are the sensor values. Example of received data: 
+    [1, 34.7, 30.6]. 1 would be the device identifier while 34.7 and 30.6 are the sensor values.
+    '''
     json_payload = []
     print("Will try to upload the following raw data: {}".format(data))
-    switch_database(data[0])
+    
+    # if switching database fails - abort
+    if switch_database(data[0]) is False:
+        return 0
+    
+    # try to construct json file and upload it
     for num, var in enumerate(data):
-        print(num, var)
         if num!=0:
             try:
                 data = {
@@ -34,22 +49,29 @@ def upload_data(data):
                 },
                 "time": datetime.now(),
                 "fields": {
-                    "val": round(float(var),1)
+                    "val": round(float(var), 1)
                 }
             }
+                json_payload.append(data)
+
             except:
                 print("Can't append non-numeric in array location: {} with value: {}".format(num, var))
-            
-            json_payload.append(data)
+                
+    # if the list is not empty, try to upload it to influxDB
+    if json_payload:
+        try:
+            print("Uploading json file...")
+            #client.write_points(json_payload)
+        except:
+            print("Failed to upload json file.")
+    else:
+        print("Failed to upload json file because it is empty!")
+    
     print(json_payload)
 
+def main():
 
+    upload_data([2, -9.9, 97.887])
 
-#client.write_points(json_payload)
-        
-
-input_data = [2,54.00001, 54,67,'m']
-
-upload_data(input_data)
-
-
+if __name__ == "__main__":
+    main()
