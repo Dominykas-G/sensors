@@ -1,8 +1,8 @@
-#from influxdb import InfluxDBClient
+from influxdb import InfluxDBClient
 from datetime import datetime
 
-#client = InfluxDBClient('localhost', 8086, 'rpi', 'rpi321' 'data')
-#client.switch_database('data')
+client = InfluxDBClient('localhost', 8086, 'rpi', 'rpi321' 'data')
+client.switch_database('data')
 
 
 def switch_database(val):
@@ -16,10 +16,10 @@ def switch_database(val):
     except:
         print("Can't convert {} into integer".format(val))
     if device_no == 1:
-        #client.switch_database("device_1")
+        client.switch_database("device_1")
         print("Switched to database device_1 \n")
     elif device_no == 2:       
-        #client.switch_database("device_2")
+        client.switch_database("device_2")
         print("Switched to database device_2 \n")
     else:
         print("No database with integer {0}! No device_{0}. Aborting upload.".format(device_no))
@@ -61,7 +61,7 @@ def upload_data(data):
     if json_payload:
         try:
             print("Uploading json file...")
-            #client.write_points(json_payload)
+            client.write_points(json_payload)
         except:
             print("Failed to upload json file.")
     else:
@@ -71,7 +71,7 @@ def upload_data(data):
 
 def main():
 
-    upload_data([2, -9.9, 97.887])
+    upload_data([1, -9.9, 97.887])
 
 if __name__ == "__main__":
     main()

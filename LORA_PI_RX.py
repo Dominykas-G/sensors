@@ -2,6 +2,8 @@ from time import sleep
 from SX127x.LoRa import *
 from SX127x.board_config import BOARD
 
+from upload_to_influxdb import *
+
 BOARD.setup()
 
 class LoRaRcvCont(LoRa):
@@ -25,10 +27,13 @@ class LoRaRcvCont(LoRa):
         self.clear_irq_flags(RxDone=1)
         payload = self.read_payload(nocheck=True)
         print(bytes(payload).decode("utf-8",'ignore'))
-		
+        msg = bytes(payload).decode("utf-8",'ignore')
+        print(type(msg))
 		# Part where you make json file and append it to influxDB goes
 		# here I guess... Also, push it to different parts of influxDB
 		# Depending on the received temperature sensor module
+
+        upload_data(msg)
 		
         self.set_mode(MODE.SLEEP)
         self.reset_ptr_rx()
@@ -40,6 +45,10 @@ lora.set_mode(MODE.STDBY)
 #  Medium Range  Defaults after init are 434.0MHz, Bw = 125 kHz, Cr = 4/5, Sf = 128chips/symbol, CRC on 13 dBm
 
 lora.set_pa_config(pa_select=1)
+
+# maybe add try except with the influxDB client here? 
+# maybe not worth it as I will have to pass an instance later.
+# check how fast influxDB starts when called each infivudual time. 
 
 try:
     lora.start()
