@@ -1,7 +1,7 @@
 from influxdb import InfluxDBClient
 from datetime import datetime
 
-client = InfluxDBClient(url='http://localhost:8086', username='pi', password='rpi321')
+client = InfluxDBClient(host='localhost', port='8086', username='pi', password='rpi321')
 client.switch_database('device_1')
 
 
