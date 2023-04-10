@@ -25,15 +25,18 @@ def switch_database(val):
         print("No database with integer {0}! No device_{0}. Aborting upload.".format(device_no))
         return False
 
-def upload_data(data):
+def upload_data(data_raw):
     '''
     This function creates json file and tries to upload it to influxDB. First integer of the received data 
     must be device identifier while the following data are the sensor values. Example of received data: 
-    [1, 34.7, 30.6]. 1 would be the device identifier while 34.7 and 30.6 are the sensor values.
+    1,34.7,30.6. 1 would be the device identifier while 34.7 and 30.6 are the sensor values.
     '''
     json_payload = []
     print("Will try to upload the following raw data: {}".format(data))
     
+    # putting data into a list
+    data = [letter for letter in data_raw.split(",")]
+
     # if switching database fails - abort
     if switch_database(data[0]) is False:
         return 0
@@ -71,7 +74,7 @@ def upload_data(data):
 
 def main():
 
-    upload_data([1, -9.9, 97.887])
+    upload_data("1,-9.9,97.887")
 
 if __name__ == "__main__":
     main()
