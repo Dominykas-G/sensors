@@ -32,6 +32,7 @@ def upload_data(data_raw):
     1,34.7,30.6. 1 would be the device identifier while 34.7 and 30.6 are the sensor values.
     '''
     json_payload = []
+    data = []
     print("Will try to upload the following raw data: {}".format(data))
     
     # putting data into a list
@@ -74,7 +75,7 @@ def upload_data(data_raw):
 
 def main():
 
-    upload_data("1,-9.9,97.887")
+    # upload_data("1,-9.9,97.887")
 
 if __name__ == "__main__":
     main()
