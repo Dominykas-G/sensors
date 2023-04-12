@@ -32,11 +32,13 @@ def upload_data(data_raw):
     1,34.7,30.6. 1 would be the device identifier while 34.7 and 30.6 are the sensor values.
     '''
     json_payload = []
-    data = []
+   
+
+    # putting data into a list
+    # data = []
+    data = [letter for letter in data_raw.split(",")]
     print("Will try to upload the following raw data: {}".format(data))
     
-    # putting data into a list
-    data = [letter for letter in data_raw.split(",")]
 
     # if switching database fails - abort
     if switch_database(data[0]) is False:
@@ -51,7 +53,7 @@ def upload_data(data_raw):
                 "tags": {
                     "sensor": str(num)
                 },
-                "time": datetime.now(),
+                "time": datetime.utcnow().isoformat() + "Z",
                 "fields": {
                     "val": round(float(var), 1)
                 }
@@ -74,8 +76,8 @@ def upload_data(data_raw):
     print(json_payload)
 
 def main():
-
-    # upload_data("1,-9.9,97.887")
-
+    
+    upload_data("2,7.9")
+    
 if __name__ == "__main__":
     main()
